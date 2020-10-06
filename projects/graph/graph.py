@@ -102,14 +102,36 @@ class Graph:
         if visited == None:
             visited = set()
 
-        visited.add(starting_vertex)
         print(starting_vertex)
+        visited.add(starting_vertex)
         #print("DFT Recursive")
 
-        for vertex in self.vertices[starting_vertex]:
-            if vertex not in visited:
-                self.dft_recursive(vertex, visited)
+        for neighbor in self.get_neighbors(starting_vertex):
+            if neighbor not in visited:
+                self.dft_recursive(neighbor, visited)
         return visited
+
+
+    def alternate_bfs_solution(self, starting_vertex, destination_vertex):
+        q = Queue()
+        visited = set()
+        #Init:
+        q.enqueue([starting_vertex])
+        #While the queue isn't empty:
+        while q.size() > 0:
+            path = q.dequeue()
+            #end_of_path_node = path[-1]
+            v = path[-1]
+
+            if v not in visited:
+                if v == destination_vertex:
+                    return path #Found it!
+                visited.add(v)
+
+                for neighbor in self.get_neighbors(v):
+                    new_path = path + [neighbor]
+                    q.enqueue(new_path)
+
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -192,7 +214,7 @@ class Graph:
                 visited.add(current_vertex)
 
                 for neighbor_vertex in self.get_neighbors(current_vertex):
-                #Stack up NEW PATHS with each neighbor:
+                    #Stack up NEW PATHS with each neighbor:
                     #take current path
                     #append the neighbor to it
                     #stack up NEW path
@@ -289,6 +311,7 @@ if __name__ == '__main__':
     '''
     print(graph.bfs(1, 6))
     #print(graph.bfs(4, 2)) #hailey added as a test
+    print(graph.alternate_bfs_solution(1, 6)) #hailey added following along with Beej
 
     '''
     Valid DFS paths:
