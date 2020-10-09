@@ -29,7 +29,7 @@ Try moving south and you will find yourself in room `5` which contains exits `['
 }
 ```
 
-You know you are done when you have exactly 500 entries (0-499) in your graph and no `'?'` in the adjacency dictionaries. To do this, you will need to write a traversal algorithm that logs the path into `traversal_path` as it walks.
+You know you are done when you have exactly 500 entries (0-499) in your graph and no `'?'` in the adjacency dictionaries. To do this, you will need to write a traversal algorithm that logs the path into `traversal_path` as it walks. #actually Beej said we don't have to have no ?s in the adjacency dict, just hit every room at least once.
 
 Your solution **must** generate the solution by using graph traversal algorithms. Hardcoding a solution is not acceptable.
 
@@ -67,3 +67,14 @@ My best path is 957 moves. Can you find a shorter path?
 | **FINAL SCORE** | | **0-1** | **2** | **3** |  |
 
 
+shortest path for each of the test maps:
+# map_file = "maps/test_line.txt"
+# shortest is 2
+# map_file = "maps/test_cross.txt"
+# shortest is 14
+# map_file = "maps/test_loop.txt"
+# shortest is 14
+# map_file = "maps/test_loop_fork.txt"
+# shortest is 24
+# map_file = "maps/main_maze.txt"
+# shortest is 918
