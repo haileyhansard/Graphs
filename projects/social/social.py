@@ -13,7 +13,10 @@ class User:
 class SocialGraph:
     def __init__(self):
         self.last_id = 0
+        #Maps IDs to User objects (lookup table for User Objects given IDs)
         self.users = {} # {1: User("1"), 2: User("2"), ...}
+        #Adjacency List
+        #Maps user_ids to a list of other users (who are their friends)
         self.friendships = {} # {1: {2, 3, 4}, 2: {1}, 3: {1}, 4: {1}} example
 
     def add_friendship(self, user_id, friend_id):
@@ -21,12 +24,15 @@ class SocialGraph:
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
-            print("WARNING: You cannot be friends with yourself")
+            #print("WARNING: You cannot be friends with yourself")
+            return False #if add friendship fails, return False
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
-            print("WARNING: Friendship already exists")
-        else:
-            self.friendships[user_id].add(friend_id)
-            self.friendships[friend_id].add(user_id)
+            #print("WARNING: Friendship already exists")
+            return False
+
+        self.friendships[user_id].add(friend_id)
+        self.friendships[friend_id].add(user_id)
+        return True
 
     def add_user(self, name):
         """
@@ -47,7 +53,7 @@ class SocialGraph:
         The number of users must be greater than the average number of friendships.
         """
         #RUNTIME of populate_graph is On^2 because of double For Loop
-        
+
         # Reset graph
         self.last_id = 0
         self.users = {}
@@ -69,15 +75,54 @@ class SocialGraph:
             for friend_id in range(user_id + 1, self.last_id + 1):
                 possible_friendships.append((user_id, friend_id))
         
+        #Randomly select X friendships
+        #The formula for X is num_users * avg_friendships // 2
         # Shuffle friendship array in random order
         random.shuffle(possible_friendships)
 
         # Take the first num_users * avg_friendships / 2 and that will be the friendships for that graph
 
-        x = 0
+        #x = 0
         for i in range(0, math.floor(num_users * avg_friendships / 2)):
             friendship = possible_friendships[i]
             self.add_friendship(friendship[0], friendship[1]) #pass in IDs of both users who are becoming friends, helper method creates friendship edge
+    
+    def populate_graph_linear(self, num_users, avg_friendships):
+        #Keep randomly making friendships until we've made the right amount
+        #Randomly select two vertices to become friends
+        #If it is a success, then increment number of friendships made
+        #Else, try again
+    
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+
+        for i in range(0, num_users):
+            self.add_user(f"User {i}")
+
+        target_friendships = num_users * avg_friendships
+        total_friendships = 0
+        collisions = 0
+        while total_friendships < target_friendships:
+            user_id = random.randint(1, self.last_id)
+            friend_id = random.randint(1, self.last_id)
+            if self.add_friendship_linear(user_id, friend_id):
+                total_friendships += 2
+            else:
+                collisions += 1
+        print(f"collisions: {collisions}")
+
+
+    def add_friendship_linear(self, user_id, friend_id):
+        if user_id == friend_id:
+            return False
+        elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
+            return False
+        else:
+            self.friendships[user_id].add(friend_id)
+            self.friendships[friend_id].add(user_id)
+
+
 
     def get_all_social_paths(self, user_id):
         """
